@@ -14,10 +14,13 @@ def evalUtterance(utterance):
 	best_segment = n
 	bestCost = evalWord(utterance[0:n])
 	bestSegpoint = 0
+
 	for i in range(1, n):
 		subUtterance = utterance[0:i]
 		word = utterance[i::]
 		cost = evalUtterance(subUtterance) + evalWord(word)
+		print("cost is", cost)
+		print(subUtterance, word)
 		if cost < bestCost:
 			bestCost = cost
 			bestSegpoint = i
@@ -52,7 +55,8 @@ def evalWord(word):
 
 	'''
 	score = 0
-	# implement lexicon with words and give frequencies. Maybe a dictionary
+
+	# this parts calculate probability based on phonemes
 	if word not in lexicon:
 
 		if len(lexicon) == 0:
@@ -62,23 +66,40 @@ def evalWord(word):
 
 		# this makes no sense?!
 		P_0 = phonemes['#'] / sum(phonemes.values())
+		prob = P_0 / (1-P_0)
 
-		if escape == 0:
-			score = 0
-		else:
-			score = -math.log(escape) - math.log(P_0 / (1-P_0))
+		# if escape == 0:
+		# 	score = 0
+		# else:
+		# 	print("new score was calculated here")
+		# 	print(math.log(P_0 / (1-P_0)))
+		# 	print(math.log(escape))
+		# 	print(-math.log(escape) - math.log(P_0 / (1-P_0)))
+		# 	score = -math.log(escape) - math.log(P_0 / (1-P_0))
 
 		for i in range(len(word)):
-			if phonemes[word[i]] != 0:
-				score -= math.log(phonemes[word[i]])
+			prob *= 2* ( phonemes[word[i]] / sum(phonemes.values()) )
+
+		score += -math.log(prob)
 
 	else:
 		P_W = lexicon[word] / (len(lexicon) + sum(lexicon.values()))
-		score = - math.log(P_W)
+		score += -math.log(P_W)
 	return score
 
 if __name__ == "__main__":
-	with open('Bernstein-Ratner87', "r") as text:
-		for line in text:
+	with open('data/small-Bernstein-Ratner87', "r") as text:
+		for count, line in enumerate(text):
 			processedLine = line.replace('\n', '').replace(" ", "")
+			print(processedLine)
 			evalUtterance(processedLine)
+
+			print("we are at line: " + str(count))
+			with open('data/progress1.txt','a') as progress:
+				progress.write("We are at line: " + str(count) + "\n")
+
+	with open('data/result1.txt','a') as result:
+		result.write(str(lexicon))
+		result.write(str(phonemes))
+
+	
