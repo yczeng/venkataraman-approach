@@ -34,9 +34,10 @@ def evalUtterance(utterance):
 	i = n - 1
 	# not sure what the point of this is. It seems to just set i to 0?
 	while i > 0:
-		# insertWordBoundary(u, prevBoundary[i])
 		i = prevBoundary[i]
+		print(i)
 
+	insertWordBoundary(utterance, prevBoundary[i])
 	print(utterance, bestCost[n-1])
 	return bestCost[n-1]
 
@@ -63,20 +64,18 @@ def evalUtterance(utterance):
 # 	return bestCost
 
 def insertWordBoundary(utterance, bestSegpoint):
-	# for inserting into word boundary
+	if bestSegpoint == -1:
+		newWord = utterance
+	else:
+		newWord = utterance[bestSegpoint::]
 
-
-	# newWord = utterance[bestSegpoint::]
-	# if newWord in lexicon:
-	# 	lexicon[newWord] += 1
-	# else:
-	# 	lexicon[newWord] = 1
+	if newWord in lexicon:
+		lexicon[newWord] += 1
+	else:
+		lexicon[newWord] = 1
 
 	for phoneme in newWord:
-		if phoneme in phonemes:
-			phonemes[phoneme] += 1
-		else:
-			phonemes[phonemes] = 0
+		phonemes[phoneme] += 1
 
 
 def evalWord(word):
@@ -121,6 +120,8 @@ if __name__ == "__main__":
 			evalUtterance(processedLine)
 			print(phonemes)
 			print("length of phonemes", len(phonemes))
+			print(lexicon)
+			print("length of lexicon", len(lexicon))
 
 			# with open('data/progress1.txt','a') as progress:
 			# 	progress.write("We are at line: " + str(count) + "\n")
