@@ -123,7 +123,7 @@ if __name__ == "__main__":
 			print(lexicon)
 			print("length of lexicon", len(lexicon))
 
-			# with open('data/progress1.txt','a') as progress:
+			# with open('dump/progress1.txt','a') as progress:
 			# 	progress.write("We are at line: " + str(count) + "\n")
 
 	with open('data/result1.txt','a') as result:
