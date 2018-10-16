@@ -6,7 +6,7 @@ import math
 lexicon = {}
 
 # this is probably just strings as keys and frequencies as values
-phonemes = {'I': 1,'E': 1,'&': 1,'A': 1,'a': 1,'O': 1,'U': 1,'6': 1,'i': 1,'e': 1,'9': 1,'Q': 1,'u': 1,'o': 1,'7': 1,'3': 1,'R': 1,'#': 1,'%': 1,'*': 1,'(': 1,')': 1,'p': 1,'b': 1,'m': 1,'t': 1,'d': 1,'n': 1,'k': 1,'g': 1,'N': 1,'f': 1,'v': 1,'T': 1,'D': 1,'s': 1,'z': 1,'S': 1,'Z': 1,'h': 1,'c': 1,'G': 1,'l': 1,'r': 1,'L': 1,'~': 1,'M': 1,'y': 1,'w': 1,'W': 1}
+phonemes = {" ": 1, "#": 1, "%": 1, "&": 1, "(": 1, ")": 1, "*": 1, "3": 1, "6": 1, "7": 1, "9": 1, "A": 1, "D": 1, "E": 1, "G": 1, "I": 1, "L": 1, "M": 1, "N": 1, "O": 1, "Q": 1, "R": 1, "S": 1, "T": 1, "U": 1, "W": 1, "Z": 1, "a": 1, "b": 1, "c": 1, "d": 1, "e": 1, "f": 1, "g": 1, "h": 1, "i": 1, "k": 1, "l": 1, "m": 1, "n": 1, "o": 1, "p": 1, "r": 1, "s": 1, "t": 1, "u": 1, "v": 1, "w": 1, "y": 1, "z": 1, "~": 1}
 
 def evalUtterance(utterance):
 	n = len(utterance)
@@ -21,7 +21,7 @@ def evalUtterance(utterance):
 		bestCost[i] = evalWord(utterance[0:i])
 		prevBoundary[i] = -1
 
-		for j in range(i):
+		for j in range(1, i):
 			if j+1 != i:
 				word = utterance[j+1:i]
 				cost = bestCost[j] + evalWord(word)
@@ -30,10 +30,14 @@ def evalUtterance(utterance):
 					bestCost[i] = cost
 					prevBoundary[i] = j
 
+	print(prevBoundary)
 	i = n - 1
+	# not sure what the point of this is. It seems to just set i to 0?
 	while i > 0:
 		# insertWordBoundary(u, prevBoundary[i])
 		i = prevBoundary[i]
+
+	print(utterance, bestCost[n-1])
 	return bestCost[n-1]
 
 
@@ -106,19 +110,20 @@ def evalWord(word):
 	else:
 		P_W = lexicon[word] / (len(lexicon) + sum(lexicon.values()))
 		score += -math.log(P_W)
-	print("Cost("+ word + ") = " + str(score) + "\n")
+	print("Cost("+ word + ") = " + str(score))
 	return score
 
 if __name__ == "__main__":
 	with open('data/small-Bernstein-Ratner87', "r") as text:
 		for count, line in enumerate(text):
 			processedLine = line.replace('\n', '').replace(" ", "")
-			print(processedLine)
-			evalUtterance(processedLine)
 
-			print("we are at line: " + str(count))
-			with open('data/progress1.txt','a') as progress:
-				progress.write("We are at line: " + str(count) + "\n")
+			evalUtterance(processedLine)
+			print(phonemes)
+			print("length of phonemes", len(phonemes))
+
+			# with open('data/progress1.txt','a') as progress:
+			# 	progress.write("We are at line: " + str(count) + "\n")
 
 	with open('data/result1.txt','a') as result:
 		result.write(str(lexicon))
