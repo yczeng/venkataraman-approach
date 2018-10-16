@@ -79,18 +79,12 @@ def evalWord(word):
 
 	# this parts calculate probability based on phonemes
 	if word not in lexicon:
-
-		if len(lexicon) == 0:
-			escape = 0
-		else:
-			escape = len(lexicon) / len(lexicon) + sum(lexicon.values())
-
 		# this makes no sense?!
 		P_0 = phonemes['#'] / sum(phonemes.values())
 		prob = P_0 / (1-P_0)
 
 		for i in range(len(word)):
-			prob *= 2* ( phonemes[word[i]] / sum(phonemes.values()) )
+			prob *=  phonemes[word[i]] / sum(phonemes.values())
 
 		score += -math.log(prob)
 
