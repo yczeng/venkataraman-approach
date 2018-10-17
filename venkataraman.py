@@ -27,6 +27,7 @@ def evalUtterance(utterance):
 			cost = bestCost[j] + evalWordResult
 
 			if cost < bestCost[i]:
+				print("HOWDY PARTNER")
 				bestCost[i] = cost
 				prevBoundary[i] = j
 
@@ -41,11 +42,14 @@ def evalUtterance(utterance):
 	# print(newWord, bestCost[n-1])
 	return bestCost[n-1]
 
+#[-1, -1, -1, -1, 1, 4, 4, 4, 4, 4, 4, 4, 4]
+#Iz D&t f%D6dOgi
+#IzD&tf%D6dOgi
 def insertWordBoundary(utterance, bestSegpoint):
 	if bestSegpoint == -1:
 		newWord = utterance
 	else:
-		newWord = utterance[bestSegpoint::]
+		newWord = utterance[bestSegpoint + 1::]
 
 	if newWord in lexicon:
 		lexicon[newWord] += 1
