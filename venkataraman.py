@@ -12,11 +12,11 @@ def evalUtterance(utterance):
 	'''
 	Takes an unsegmented string and returns it as a segmented string with spacing.
 	Args:
-		utterace: utterance u[0..n] where u[i] are the phonemes in it. Word is a string.
-		i.e. IzD&tf%D6dOgi
+		utterace: utterance u[0..n] where u[i] are the phonemes in it.
+		i.e. "IzD&tf%D6dOgi"
 	Returns:
-		score: negative log of the probability of the word and phoneme. Uses Katz back-off.
-		i.e. Iz D&t f%D6dOgi
+		segmentedWord: best segmentation of utterance based on negative log of the probability of the word and phoneme (uses Katz back-off).
+		i.e. "Iz D&t f%D6dOgi"
 
 	'''
 	n = len(utterance)
