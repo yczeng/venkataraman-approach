@@ -22,15 +22,16 @@ def evalUtterance(utterance):
 		prevBoundary[i] = -1
 
 		for j in range(i):
-			if j+1 != i:
-				word = utterance[j+1:i]
-				evalWordResult = evalWord(word)
-				cost = bestCost[j] + evalWordResult
+			word = utterance[j+1:i+1]
+			evalWordResult = evalWord(word)
+			cost = bestCost[j] + evalWordResult
 
-				if cost < bestCost[i-1]:
-					# print("HOWDY PARTNER")
-					bestCost[i] = cost
-					prevBoundary[i] = j
+			if cost < bestCost[i-1]:
+				# print("HOWDY PARTNER")
+				# print("bestCost[i]", bestCost[i])
+				# print("cost", cost)
+				bestCost[i] = cost
+				prevBoundary[i] = j
 
 	print(prevBoundary)
 	print(bestCost)
@@ -54,9 +55,8 @@ def insertWordBoundary(utterance, bestSegpoint):
 	else:
 		lexicon[newWord] = 1
 		phonemes[" "] += 1
-
-	for phoneme in newWord:
-		phonemes[phoneme] += 1
+		for phoneme in newWord:
+			phonemes[phoneme] += 1
 
 	print("new word is", newWord)
 
