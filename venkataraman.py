@@ -27,29 +27,26 @@ def evalUtterance(utterance):
 			cost = bestCost[j] + evalWordResult
 
 			if cost < bestCost[i]:
-				print("HOWDY PARTNER")
 				bestCost[i] = cost
 				prevBoundary[i] = j
 
-	print(prevBoundary)
-	print(bestCost)
-
 	i = n - 1
+	segUtterance = utterance
+
+	allWords = []
 	while i > 0:
-		insertWordBoundary(utterance, prevBoundary[i])
+		newWord, segUtterance = insertWordBoundary(segUtterance, prevBoundary[i])
+		allWords.append(newWord)
 		i = prevBoundary[i]
 
-	# print(newWord, bestCost[n-1])
-	return bestCost[n-1]
+	allWords.reverse()
+	return " ".join(allWords)
 
-#[-1, -1, -1, -1, 1, 4, 4, 4, 4, 4, 4, 4, 4]
-#Iz D&t f%D6dOgi
-#IzD&tf%D6dOgi
 def insertWordBoundary(utterance, bestSegpoint):
 	if bestSegpoint == -1:
 		newWord = utterance
 	else:
-		newWord = utterance[bestSegpoint + 1::]
+		newWord = utterance[bestSegpoint + 1:]
 
 	if newWord in lexicon:
 		lexicon[newWord] += 1
@@ -59,7 +56,7 @@ def insertWordBoundary(utterance, bestSegpoint):
 		for phoneme in newWord:
 			phonemes[phoneme] += 1
 
-	print("new word is", newWord)
+	return newWord, utterance[:bestSegpoint + 1]
 
 def evalWord(word):
 	'''
@@ -79,17 +76,13 @@ def evalWord(word):
 	if word in lexicon:
 		P_W = lexicon[word] / (sum(lexicon.values()) + len(lexicon))
 		score += -math.log(P_W)
-		print("Cost1("+ word + ") = " + str(score))
+		# print("Cost1("+ word + ") = " + str(score))
 		return score
 	else:
 		# back off to phonemes
 		if len(lexicon) != 0:
-			# print("SCORE ADDITION", -math.log(len(lexicon) / (sum(lexicon.values()) + len(lexicon))))
 			score += -math.log(len(lexicon) / (sum(lexicon.values()) + len(lexicon)))
 
-	# this parts calculate probability based on phonemes
-	# print("phonemes[' '] is", phonemes[' '])
-	# print("sum(phonemes.values() is", sum(phonemes.values()))
 
 	P_0 = phonemes[' '] / sum(phonemes.values())
 	prob = P_0 / (1-P_0)
@@ -99,24 +92,15 @@ def evalWord(word):
 
 	score += -math.log(prob)
 
-	# I believe this calculation is correct. Not where the error is.
-	print("Cost0("+ word + ") = " + str(score))
 	return score
 
 if __name__ == "__main__":
 	with open('data/small-Bernstein-Ratner87', "r") as text:
-		for count, line in enumerate(text):
-			processedLine = line.replace('\n', '').replace(' ', '')
+		with open('results/result.txt','w') as result:
+			for count, line in enumerate(text):
+				processedLine = line.replace('\n', '').replace(' ', '')
 
-			evalUtterance(processedLine)
-
-			print(phonemes)
-			print("length of phonemes", len(phonemes))
-			print(lexicon)
-			print("length of lexicon", len(lexicon))
-
-	with open('data/result1.txt','a') as result:
-		result.write(str(lexicon))
-		result.write(str(phonemes))
-
+				segmentedWord = evalUtterance(processedLine)
+				print(segmentedWord)
+				result.write(segmentedWord + "\n")
 	
