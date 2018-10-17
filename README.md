@@ -11,6 +11,6 @@ git clone https://github.com/yczeng/venkataraman-approach.git
 ```
 cd into the directory, and run:
 ```
-python venkataraman.py
+python search.py
 ```
 The results of the segmentation will be stored in `results/result.txt`.
