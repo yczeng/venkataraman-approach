@@ -9,6 +9,16 @@ lexicon = {}
 phonemes = {" ": 1, "#": 1, "%": 1, "&": 1, "(": 1, ")": 1, "*": 1, "3": 1, "6": 1, "7": 1, "9": 1, "A": 1, "D": 1, "E": 1, "G": 1, "I": 1, "L": 1, "M": 1, "N": 1, "O": 1, "Q": 1, "R": 1, "S": 1, "T": 1, "U": 1, "W": 1, "Z": 1, "a": 1, "b": 1, "c": 1, "d": 1, "e": 1, "f": 1, "g": 1, "h": 1, "i": 1, "k": 1, "l": 1, "m": 1, "n": 1, "o": 1, "p": 1, "r": 1, "s": 1, "t": 1, "u": 1, "v": 1, "w": 1, "y": 1, "z": 1, "~": 1}
 
 def evalUtterance(utterance):
+	'''
+	Takes an unsegmented string and returns it as a segmented string with spacing.
+	Args:
+		utterace: utterance u[0..n] where u[i] are the phonemes in it. Word is a string.
+		i.e. IzD&tf%D6dOgi
+	Returns:
+		score: negative log of the probability of the word and phoneme. Uses Katz back-off.
+		i.e. Iz D&t f%D6dOgi
+
+	'''
 	n = len(utterance)
 	bestCost = [0] * n
 	prevBoundary = [0] * n
@@ -60,11 +70,12 @@ def insertWordBoundary(utterance, bestSegpoint):
 
 def evalWord(word):
 	'''
-	Calculates a log score for word
+	Calculates a log score for word.
 
 	Args:
-		word: word w[0..k] where w[i] are the phonemes in it. Word is a string
+		word: word w[0..k] where w[i] are the phonemes in it. Word is a string.
 	Returns:
+		score: calculated based on phoneme and lexicon tables using Katz back-off.
 
 	'''
 	score = 0
