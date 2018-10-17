@@ -13,24 +13,25 @@ def evalUtterance(utterance):
 	bestCost = [0] * n
 	prevBoundary = [0] * n
 
-	#finally... now we have a base case
 	if n == 0:
 		return 0;
 
-	for i in range(1, n):
-		bestCost[i] = evalWord(utterance[0:i])
-		prevBoundary[i] = -1
+	for i in range(0, n + 1):
+		bestCost[i-1] = evalWord(utterance[0:i])
+		prevBoundary[i-1] = -1
 
-		for j in range(0, i):
+		for j in range(i):
 			if j+1 != i:
 				word = utterance[j+1:i]
-				cost = bestCost[j] + evalWord(word)
+				evalWordResult = evalWord(word)
+				cost = bestCost[j] + evalWordResult
 
-				if cost < bestCost[i]:
+				if cost < bestCost[i-1]:
 					bestCost[i] = cost
 					prevBoundary[i] = j
 
 	print(prevBoundary)
+	print(bestCost)
 	i = n - 1
 	# not sure what the point of this is. It seems to just set i to 0?
 	
@@ -55,7 +56,7 @@ def insertWordBoundary(utterance, bestSegpoint):
 	for phoneme in newWord:
 		phonemes[phoneme] += 1
 
-	print("new word is", newWord)
+	# print("new word is", newWord)
 	return newWord
 
 def evalWord(word):
@@ -69,36 +70,38 @@ def evalWord(word):
 	'''
 	score = 0
 
-	# this parts calculate probability based on phonemes
-	if word not in lexicon:
-		# this makes no sense?!
-		P_0 = phonemes['#'] / sum(phonemes.values())
-		prob = P_0 / (1-P_0)
+	if len(word) == 0:
+		return score
 
-		for i in range(len(word)):
-			prob *=  phonemes[word[i]] / sum(phonemes.values())
-
-		score += -math.log(prob)
-
-	else:
+	# unigram
+	if word in lexicon:
 		P_W = lexicon[word] / (len(lexicon) + sum(lexicon.values()))
 		score += -math.log(P_W)
+
+	# this parts calculate probability based on phonemes
+	P_0 = phonemes['#'] / sum(phonemes.values())
+	prob = P_0 / (1-P_0)
+
+	for i in range(len(word)):
+		prob *= float(phonemes[word[i]] / sum(phonemes.values()))
+
+	score += -math.log(prob)
+
+	# I believe this calculation is correct. Not where the error is.
 	print("Cost("+ word + ") = " + str(score))
 	return score
 
 if __name__ == "__main__":
 	with open('data/small-Bernstein-Ratner87', "r") as text:
 		for count, line in enumerate(text):
-			processedLine = line.replace('\n', '').replace(" ", "")
+			processedLine = line.replace('\n', '').replace(' ', '')
 
-			newWord = evalUtterance(processedLine)[1]
+			evalUtterance(processedLine)
+
 			print(phonemes)
 			print("length of phonemes", len(phonemes))
 			print(lexicon)
 			print("length of lexicon", len(lexicon))
-
-			# with open('dump/results1.txt','a') as progress:
-			# 	progress.write(newWord + "\n")
 
 	with open('data/result1.txt','a') as result:
 		result.write(str(lexicon))
