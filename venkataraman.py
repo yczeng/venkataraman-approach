@@ -13,10 +13,10 @@ def evalUtterance(utterance):
 	Takes an unsegmented string and returns it as a segmented string with spacing.
 	Args:
 		utterace: utterance u[0..n] where u[i] are the phonemes in it.
-		i.e. "IzD&tf%D6dOgi"
+				  i.e. "IzD&tf%D6dOgi"
 	Returns:
 		segmentedWord: best segmentation of utterance based on negative log of the probability of the word and phoneme (uses Katz back-off).
-		i.e. "Iz D&t f%D6dOgi"
+					   i.e. "Iz D&t f%D6dOgi"
 
 	'''
 	n = len(utterance)
@@ -53,6 +53,18 @@ def evalUtterance(utterance):
 	return " ".join(allWords)
 
 def insertWordBoundary(utterance, bestSegpoint):
+	'''
+	Addeds the best segmentation of the utterance into lexicon table.
+	If the best segmentation is a new word, add each of its phonemes into the phonemes table.
+
+	Args:
+		utterace: utterance u[0..n] where u[i] are the phonemes in it.
+		bestSegpoint: an integer representing the index of bestSegpoint
+	Returns:
+		segUtterance: new smaller utterance after removal of newWord
+		newWord: the newWord segmented and updated into the phonemes and lexicon tables.
+
+	'''
 	if bestSegpoint == -1:
 		newWord = utterance
 	else:
