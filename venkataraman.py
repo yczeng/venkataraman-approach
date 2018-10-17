@@ -26,10 +26,7 @@ def evalUtterance(utterance):
 			evalWordResult = evalWord(word)
 			cost = bestCost[j] + evalWordResult
 
-			if cost < bestCost[i-1]:
-				# print("HOWDY PARTNER")
-				# print("bestCost[i]", bestCost[i])
-				# print("cost", cost)
+			if cost < bestCost[i]:
 				bestCost[i] = cost
 				prevBoundary[i] = j
 
