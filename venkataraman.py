@@ -16,9 +16,10 @@ def evalUtterance(utterance):
 	if n == 0:
 		return 0;
 
-	for i in range(0, n + 1):
-		bestCost[i-1] = evalWord(utterance[0:i])
-		prevBoundary[i-1] = -1
+	for i in range(0, n):
+		# i+1 is different from Venkataraman's because you have to account for how i stops at n - 1
+		bestCost[i] = evalWord(utterance[0:i+1])
+		prevBoundary[i] = -1
 
 		for j in range(i):
 			if j+1 != i:
@@ -27,20 +28,20 @@ def evalUtterance(utterance):
 				cost = bestCost[j] + evalWordResult
 
 				if cost < bestCost[i-1]:
+					# print("HOWDY PARTNER")
 					bestCost[i] = cost
 					prevBoundary[i] = j
 
 	print(prevBoundary)
 	print(bestCost)
+
 	i = n - 1
-	# not sure what the point of this is. It seems to just set i to 0?
-	
 	while i > 0:
-		newWord = insertWordBoundary(utterance, prevBoundary[i])
+		insertWordBoundary(utterance, prevBoundary[i])
 		i = prevBoundary[i]
 
 	# print(newWord, bestCost[n-1])
-	return bestCost[n-1], newWord
+	return bestCost[n-1]
 
 def insertWordBoundary(utterance, bestSegpoint):
 	if bestSegpoint == -1:
@@ -52,12 +53,12 @@ def insertWordBoundary(utterance, bestSegpoint):
 		lexicon[newWord] += 1
 	else:
 		lexicon[newWord] = 1
+		phonemes[" "] += 1
 
 	for phoneme in newWord:
 		phonemes[phoneme] += 1
 
-	# print("new word is", newWord)
-	return newWord
+	print("new word is", newWord)
 
 def evalWord(word):
 	'''
@@ -75,20 +76,30 @@ def evalWord(word):
 
 	# unigram
 	if word in lexicon:
-		P_W = lexicon[word] / (len(lexicon) + sum(lexicon.values()))
+		P_W = lexicon[word] / (sum(lexicon.values()) + len(lexicon))
 		score += -math.log(P_W)
+		print("Cost1("+ word + ") = " + str(score))
+		return score
+	else:
+		# back off to phonemes
+		if len(lexicon) != 0:
+			# print("SCORE ADDITION", -math.log(len(lexicon) / (sum(lexicon.values()) + len(lexicon))))
+			score += -math.log(len(lexicon) / (sum(lexicon.values()) + len(lexicon)))
 
 	# this parts calculate probability based on phonemes
-	P_0 = phonemes['#'] / sum(phonemes.values())
+	# print("phonemes[' '] is", phonemes[' '])
+	# print("sum(phonemes.values() is", sum(phonemes.values()))
+
+	P_0 = phonemes[' '] / sum(phonemes.values())
 	prob = P_0 / (1-P_0)
 
 	for i in range(len(word)):
-		prob *= float(phonemes[word[i]] / sum(phonemes.values()))
+		prob *= float(phonemes[word[i]]) / sum(phonemes.values())
 
 	score += -math.log(prob)
 
 	# I believe this calculation is correct. Not where the error is.
-	print("Cost("+ word + ") = " + str(score))
+	print("Cost0("+ word + ") = " + str(score))
 	return score
 
 if __name__ == "__main__":
