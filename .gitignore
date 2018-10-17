@@ -1,2 +1,4 @@
 dump/*
 results/*
+!results/
+__pycache__/*
