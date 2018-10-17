@@ -95,7 +95,7 @@ def evalWord(word):
 	return score
 
 if __name__ == "__main__":
-	with open('data/small-Bernstein-Ratner87', "r") as text:
+	with open('data/Bernstein-Ratner87', "r") as text:
 		with open('results/result.txt','w') as result:
 			for count, line in enumerate(text):
 				processedLine = line.replace('\n', '').replace(' ', '')
