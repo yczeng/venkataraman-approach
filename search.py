@@ -126,4 +126,8 @@ if __name__ == "__main__":
 				segmentedWord = evalUtterance(processedLine)
 				print(segmentedWord)
 				result.write(segmentedWord + "\n")
+
+		with open('results/lexicon.txt', 'w') as writeLexicon:
+			writeLexicon.write(str(lexicon))
+
 	
