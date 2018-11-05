@@ -22,4 +22,11 @@ Precision is the number of correct words found out of all words found, recall is
 
 To score a segmented lexicon, run `score.py [segmented lexicon] [model lexicon]` where segmented lexicon and model lexicon are text files containing a dictionary of words in the lexicon. An example command is:
 
-`python score.py results/lexicon.txt data/Bernstein-Ratner87-lexicon` 
+`python score.py results/lexicon.txt data/Bernstein-Ratner87-lexicon`
+
+It looks like results are:
+```
+Precision: 0.526275115919629
+Recall: 0.5155185465556397
+f1 Score: 0.5208413001912047
+``` 

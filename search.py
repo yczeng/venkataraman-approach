@@ -49,6 +49,8 @@ def evalUtterance(utterance):
 		allWords.append(newWord)
 		i = prevBoundary[i]
 
+
+	# allWords is just to return the string with spaces in it
 	allWords.reverse()
 	return " ".join(allWords)
 
